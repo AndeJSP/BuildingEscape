@@ -99,7 +99,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	if (PhysicsHandle->GrabbedComponent)
 	{
 
-		PhysicsHandle->SetTargetLocation();
+		PhysicsHandle->SetTargetLocation(LineTraceEnd); 
 	}
 
 }
@@ -143,5 +143,5 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 	}
 
 
-	return FHitResult();
+	return Hit;
 }
