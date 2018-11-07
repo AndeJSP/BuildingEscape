@@ -40,4 +40,8 @@ private:
 	void Release();
 
 	FHitResult GetFirstPhysicsBodyInReach() const;
+	FVector GetReachLineEnd() const;
+
 };
+
+
