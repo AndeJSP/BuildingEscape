@@ -5,7 +5,8 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "Runtime/Engine/Public/DrawDebugHelpers.h"
-//#include "Runtime/Core/Public/Math/Color.h"
+#include "Components/PrimitiveComponent.h"
+
 
 #define OUT
 
@@ -59,12 +60,25 @@ void UGrabber::FindPhysicsHandleComponent()
 
 void UGrabber::Grab() {
 
-	GetFirstPhysicsBodyInReach();
+	auto HitResult = GetFirstPhysicsBodyInReach();
+	auto ComponentToGrab = HitResult.GetComponent();
+	auto ActorHit = HitResult.GetActor();
+	if (ActorHit)
+	{
+		PhysicsHandle->GrabComponent(
+			ComponentToGrab,
+			NAME_None,
+			ComponentToGrab->GetOwner()->GetActorLocation(),
+			true
+		);
+
+	}
+
 }
 
 void UGrabber::Release()
 {
-
+	PhysicsHandle->ReleaseComponent();
 
 }
 
@@ -75,8 +89,18 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	FVector PlayerViewpointLocation;
+	FRotator PlayerViewpointRotation;
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewpointLocation, OUT PlayerViewpointRotation);
 
+	// UE_LOG(LogTemp, Warning, TEXT("Location: %s Rotation: %s "), *PlayerViewpointLocation.ToString(), *PlayerViewpointRotation.ToString())
 
+	FVector LineTraceEnd = PlayerViewpointLocation + PlayerViewpointRotation.Vector() * Reach;
+	if (PhysicsHandle->GrabbedComponent)
+	{
+
+		PhysicsHandle->SetTargetLocation();
+	}
 
 }
 
